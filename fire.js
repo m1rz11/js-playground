@@ -152,6 +152,11 @@ window.addEventListener('resize', ()=>{
     restart();
 });
 
+// touch events
+canvas.addEventListener('touchmove', (e)=>{
+    bitmap[ Math.floor(e.touches[0].clientY / sf) ][ Math.floor(e.touches[0].clientX / sf) ] = 255
+})
+
 // messy controls i'm so sorry
 const decayselect = document.getElementById("decayselect");
 decayselect.addEventListener('change', ()=>{
