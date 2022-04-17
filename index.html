@@ -5,7 +5,7 @@
     <title>DOOM fire toy</title>
 
     <style>
-        html, body{
+        html, body {
             padding: 0;
             margin: 0;
             font-family: sans-serif;
@@ -13,8 +13,16 @@
             overflow: hidden;
             cursor: crosshair;
         }
+        #background{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width:100%;
+            height:100%;
+        }
         #canvas {
-            display: block;
             position: absolute;
             top: 0;
             left: 0;
@@ -29,7 +37,7 @@
             image-rendering: pixelated;                 /* Awesome future-browsers       */
             -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
         }
-        #menu{
+        #menu {
             pointer-events: none;
             display: inline;
             position: absolute;
@@ -37,9 +45,12 @@
             right: 10px;
             text-align: right;
         }
-        #menu input{
+        #menu input {
             pointer-events: auto;
             width: 40px;
+        }
+        #menu button {
+            pointer-events: auto;
         }
         input
     </style>
@@ -47,6 +58,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <img id="background">
     <canvas id="canvas" width="430" height="240"></canvas>
 
     <div id="menu">
@@ -56,8 +68,13 @@
         <br>
         Fps <input type="number" id="fpsselect" value="30" min="1" max="240"><br>
         Scale <input type="number" id="scaleselect" value="4" min="1" max="20"><br>
+        <br>
         Fire <input type="checkbox" id="fireselect" checked><br>
-        Pause <input type="checkbox" id="affectselect">
+        Pause <input type="checkbox" id="affectselect"><br>
+        Transparency <input type="checkbox" id="transparencyselect"><br>
+        <br>
+        <button id="bgbutton" style="display: none" onclick="document.getElementById('pictureselect').click()">Background</button>
+        <input style="display: none" type="file" accept="image/jpeg, image/png" id="pictureselect">
     </div>
 
     <script src="fire.js"></script>

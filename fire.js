@@ -9,6 +9,7 @@ let fps = 30;
 let intensity_min = 224;
 let intensity_max = 255 - intensity_min;
 let fireenable = affectpixels = true;
+let transparency = false;
 
 // canvas
 let canvas = document.getElementById("canvas");
@@ -66,7 +67,8 @@ function loop(){
     if (fireenable) makeFire();
     if (affectpixels) affectPixels();
 
-    draw();
+    if (transparency) drawTransparent();
+    else draw();
 }
 
 function affectPixels(){
@@ -135,6 +137,23 @@ function draw(){
     ctx.putImageData(imageData, 0, 0);
 }
 
+function drawTransparent(){
+    // transparent drawing method
+    for (let i = 0; i < h; i++){
+        for (let o = 0; o < w; o++){
+            let index = (i*w*4)+(o*4);
+            let col = colors[bitmap[i][o]];
+            imageData.data[index] = col[0];
+            imageData.data[index+1] = col[1];
+            imageData.data[index+2] = col[2];
+            imageData.data[index+3] = bitmap[i][o] > 32 ? 255 : bitmap[i][o] * 8 ;
+        }
+    }
+
+    // draw imagedata
+    ctx.putImageData(imageData, 0, 0);
+}
+
 function restart(){
     // init function
     canvas.width = Math.floor(canvas.scrollWidth / sf);
@@ -148,6 +167,8 @@ function restart(){
 
 // LET US COMMENCE
 restart();
+
+
 
 // mouse events
 canvas.addEventListener('mousedown', ()=>{
@@ -210,4 +231,25 @@ fireselect.addEventListener('change', ()=>{
 const affectselect = document.getElementById("affectselect");
 affectselect.addEventListener('change', ()=>{
     affectpixels = !affectselect.checked;
+});
+
+// transparency, bg
+const pictureselect = document.getElementById("pictureselect");
+const transparencyselect = document.getElementById("transparencyselect");
+const background = document.getElementById("background");
+transparencyselect.addEventListener('change', ()=>{
+    document.getElementById("menu").style.color = transparencyselect.checked ? "#000" : "#FFF";
+    document.getElementById("bgbutton").style.display = transparencyselect.checked ? "inline" : "none";
+    transparency = transparencyselect.checked;
+});
+
+pictureselect.addEventListener("change", function () {
+    const files = pictureselect.files[0];
+    if (files) {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(files);
+        fileReader.addEventListener("load", function () {
+            background.src = this.result;
+        });
+    }
 });
