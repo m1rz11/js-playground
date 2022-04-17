@@ -8,7 +8,7 @@ let upamt = 4;
 let fps = 30;
 let intensity_min = 224;
 let intensity_max = 255 - intensity_min;
-let fireenable = true;
+let fireenable = affectpixels = true;
 
 // canvas
 let canvas = document.getElementById("canvas");
@@ -17,11 +17,16 @@ canvas.height = Math.floor(canvas.scrollHeight / sf);
 let ctx = canvas.getContext("2d");
 let w,h,imageData;
 
+// timer
+let interval = Math.round(1000/fps);
+let now, delta;
+let then = Date.now();
+
 // stuff
 let shiftamt_h = Math.floor(shiftamt/2);
 let x = 0;
 let bitmap = [];
-let delta = Math.round(1000/fps);
+
 
 
 
@@ -51,10 +56,20 @@ function initBitmap(){
 
 // x and y is flipped because i used shift() initially
 function loop(){
-    if (fireenable){
-        makefire();
-    }
 
+    requestAnimationFrame(loop);
+    now = Date.now();
+    delta = now - then;
+    if (delta < interval) return;
+    then = now - (delta % interval);
+
+    if (fireenable) makeFire();
+    if (affectpixels) affectPixels();
+
+    draw();
+}
+
+function affectPixels(){
     // affect pixels
     for (let i = 0; i < h; i++){
         for (let o = 0; o < w; o++){
@@ -85,18 +100,16 @@ function loop(){
             }
         }
     }
-
-    draw();
 }
 
-function makefire(){
+function makeFire(){
     // add random fire to bottom
     for (let i = 0; i < w; i++){
         bitmap[h-1][i] = Math.ceil(intensity_min+Math.random()*intensity_max)
     }
 }
 
-function makefire2(){
+function makeFire2(){
     // smol test animation
     x+=10;
     if(x > 620) x = 0;
@@ -135,7 +148,6 @@ function restart(){
 
 // LET US COMMENCE
 restart();
-let interval = setInterval(loop, delta);
 
 // mouse events
 canvas.addEventListener('mousedown', ()=>{
@@ -148,6 +160,7 @@ canvas.addEventListener('mouseup', ()=>{
     canvas.onmousemove = null
 });
 
+// restart on resize
 window.addEventListener('resize', ()=>{
     restart();
 });
@@ -156,6 +169,9 @@ window.addEventListener('resize', ()=>{
 canvas.addEventListener('touchmove', (e)=>{
     bitmap[ Math.floor(e.touches[0].clientY / sf) ][ Math.floor(e.touches[0].clientX / sf) ] = 255
 })
+
+
+
 
 // messy controls i'm so sorry
 const decayselect = document.getElementById("decayselect");
@@ -177,9 +193,7 @@ upselect.addEventListener('change', ()=>{
 const fpsselect = document.getElementById("fpsselect");
 fpsselect.addEventListener('change', ()=>{
     fps = fpsselect.value;
-    delta = Math.round(1000/fps);
-    clearInterval(interval);
-    interval = setInterval(loop, delta);
+    interval = Math.round(1000/fps);
 });
 
 const scaleselect = document.getElementById("scaleselect");
@@ -191,4 +205,9 @@ scaleselect.addEventListener('change', ()=>{
 const fireselect = document.getElementById("fireselect");
 fireselect.addEventListener('change', ()=>{
     fireenable = fireselect.checked;
+});
+
+const affectselect = document.getElementById("affectselect");
+affectselect.addEventListener('change', ()=>{
+    affectpixels = !affectselect.checked;
 });
