@@ -1,6 +1,8 @@
-# doom-fire-toy
-DOOM fire toy in JavaScript
+# js playground
+Random JavaScript experiments
 
-[try it out](https://mirzi1.github.io/doom-fire-toy/)
-
+[DOOM fire](https://mirzi1.github.io/js-playground/doom)
 ![screenshot](https://i.imgur.com/8txpt3W.png)
+
+[Dust](https://mirzi1.github.io/js-playground/dust)
+![screenshot](https://i.imgur.com/HDbeUiM.png)
