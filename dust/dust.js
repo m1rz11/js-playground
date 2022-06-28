@@ -27,7 +27,7 @@ const particles = [];
 const numberOfParticles = 100;
 const minSize = 2 / sf < 0 ? 1 : 2 / sf;
 const maxSize = 20 / sf;
-const maxSpeed = 1 / sf;
+const maxSpeed = 1;
 const friction = 0.05 / sf;
 
 let windX = 0;
@@ -82,13 +82,13 @@ function draw(){
 
         // go to target size
         particle.size = lerp(particle.size, particle.sizeTarget, lerpamt);
-        if (Math.abs(particle.size - particle.sizeTarget) < 0.1) particle.sizeTarget = rng(minSize, maxSize);
+        if (Math.abs(particle.size - particle.sizeTarget) < 1) particle.sizeTarget = rng(minSize, maxSize);
 
         // go to target accel
         particle.xaccel = lerp(particle.xaccel, particle.xaccelTarget, lerpamt);
-        if (Math.abs(particle.xaccel - particle.xaccelTarget) < 0.1) particle.xaccelTarget = rng(-maxSpeed, maxSpeed);
+        if (Math.abs(particle.xaccel - particle.xaccelTarget) < 1) particle.xaccelTarget = rng(-maxSpeed, maxSpeed);
         particle.yaccel = lerp(particle.yaccel, particle.yaccelTarget, lerpamt);
-        if (Math.abs(particle.xaccel - particle.yaccelTarget) < 0.1) particle.yaccelTarget = rng(-maxSpeed, maxSpeed);
+        if (Math.abs(particle.xaccel - particle.yaccelTarget) < 1) particle.yaccelTarget = rng(-maxSpeed, maxSpeed);
 
         // apply friction
         if (particle.xaccel > maxSpeed) particle.xaccel -= friction;
