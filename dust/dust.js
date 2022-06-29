@@ -1,6 +1,6 @@
 // options
 let sf = 2; // scale factor
-let fps = 144;
+let fps = 60;
 
 // canvas
 let canvas = document.getElementById("canvas");
@@ -11,8 +11,7 @@ let w,h,wh,hh;
 let bordertop,borderleft,borderright,borderbottom;
 
 // timer
-let interval = Math.round(1000/fps);
-let now, delta;
+let interval, now, delta;
 let then = Date.now();
 
 const pi2 = Math.PI*2;
@@ -23,18 +22,18 @@ let mouseY = 0;
 
 let parallaxamt = 50 / sf;
 
-const particles = [];
-const numberOfParticles = 100;
+let particles = [];
+let numberOfParticles = 100;
 const minSize = 2 / sf < 0 ? 1 : 2 / sf;
 const maxSize = 20 / sf;
-const maxSpeed = 1;
+const maxSpeed = 2;
 const friction = 0.05 / sf;
 
 let windX = 0;
 let windY = 0;
 
 let lerpamt = 0.01 / sf;
-let lerpamt_magnet = 0.001 * sf;
+let lerpamt_magnet = 0.003 * sf;
 
 // alpha stuff
 const minAlpha = 0;
@@ -56,7 +55,6 @@ function loop(){
             particle.y = lerp(particle.y, mouseY, (maxSize - particle.size) * lerpamt_magnet);
             particle.xaccel = particle.x - lastx;
             particle.yaccel = particle.y - lasty;
-            particle.size = lerp(particle.size, minSize, (maxSize - particle.size) * lerpamt_magnet);
         }
     }
 
@@ -111,6 +109,8 @@ function draw(){
 
 function restart(){
     // init function
+    interval = Math.round(1000/fps);
+
     canvas.width = Math.floor(canvas.scrollWidth / sf);
     canvas.height = Math.floor(canvas.scrollHeight / sf);
     w = canvas.width;
@@ -125,19 +125,18 @@ function restart(){
 
     console.log(w+","+h);
 
-    if (particles.length === 0){
-        for (let i = 0; i < numberOfParticles; i++){
-            particles.push({
-                x: rng(borderleft, borderright),
-                y: rng(bordertop, borderbottom),
-                xaccel: rng(-maxSpeed, maxSpeed),
-                yaccel: rng(-maxSpeed, maxSpeed),
-                xaccelTarget: rng(-maxSpeed, maxSpeed),
-                yaccelTarget: rng(-maxSpeed, maxSpeed),
-                size: rng(minSize, maxSize),
-                sizeTarget: rng(minSize, maxSize)
-            });
-        }
+    particles = []
+    for (let i = 0; i < numberOfParticles; i++){
+        particles.push({
+            x: rng(borderleft, borderright),
+            y: rng(bordertop, borderbottom),
+            xaccel: rng(-maxSpeed, maxSpeed),
+            yaccel: rng(-maxSpeed, maxSpeed),
+            xaccelTarget: rng(-maxSpeed, maxSpeed),
+            yaccelTarget: rng(-maxSpeed, maxSpeed),
+            size: rng(maxSize, maxSize*1.5),
+            sizeTarget: rng(minSize, maxSize)
+        });
     }
 
     loop();
@@ -177,5 +176,22 @@ canvas.addEventListener('mousemove', (e)=>{
 
 // restart on resize
 window.addEventListener('resize', ()=>{
+    restart();
+});
+
+// menu
+const sfselect = document.getElementById('sfselect');
+const fpsselect = document.getElementById('fpsselect');
+const particleselect = document.getElementById('particleselect');
+sfselect.addEventListener('change', (e) => {
+    sf = sfselect.value;
+    restart();
+});
+fpsselect.addEventListener('change', (e) => {
+    fps = fpsselect.value;
+    restart();
+});
+particleselect.addEventListener('change', (e) => {
+    numberOfParticles = particleselect.value;
     restart();
 });
